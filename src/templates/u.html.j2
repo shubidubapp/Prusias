@@ -1,0 +1,69 @@
+{% extends "base.html.j2" %}
+{% import "messageflash.html.j2" as messageflash %}
+
+{% block content %}
+<div class="container" style="padding-top:50px">
+{{messageflash.flash()}}
+  <a href="{{ url_for('logout') }}"> Logout </a> <br>
+  User: {{ current_user.username }}
+  Gold: <span id='gold'> {{ current_user.gold | int }} </span>
+  Meat: <span id='meat'> {{ current_user.meat | int }} </span>
+  <ul>
+    {% for building, building_form in buildings %}
+        <div class="row filter">
+              <li>{{ building.building_type | capitalize}} Building,
+                Level: {{ building.level }},
+                Upgrade:
+                Gold: <span class='building_gold'>{{ building.upgrade_gold }}</span>
+                Meat: <span class='building_meat'>{{ building.upgrade_meat }}</span>
+                Production: <span class='production_{{ building.building_type }}'>{{ building.production_speed }}</span>/s
+                 <form method="post" action="{{url_for('upgrade_building')}}">
+                   {{ building_form.id }}
+                   <input type="submit" value="Upgrade!">
+                 </form>
+              </li>
+      	</div>
+    {% endfor %}
+  </ul>
+</div>
+{% endblock %}
+
+{% block scripts %}
+  {{ super() }}
+  <script type="text/javascript">
+      $(document).ready(main);
+      var interval = 2;
+      function main() {
+        update_produce();
+        var updater = setInterval(update_produce, 1000 * interval);
+        function update_produce() {
+          window.new_gold = parseInt($('#gold').html());
+          $('span.production_gold').each(function() {
+            var increase = parseInt($(this).html()) * window.interval
+            window.new_gold += increase;
+          });
+          window.new_meat = parseInt($('#meat').html());
+          $('span.production_meat').each(function() {
+            var increase = parseInt($(this).html()) * window.interval
+            window.new_meat += increase;
+          });
+          $('#gold').html(window.new_gold);
+          $('#meat').html(window.new_meat);
+          $('span.building_gold').each(function() {
+            if(window.new_gold > $(this).html()){
+              $(this).css('color','green')
+            } else {
+              $(this).css('color','red')
+            }
+          });
+          $('span.building_meat').each(function() {
+            if(window.new_meat > $(this).html()){
+              $(this).css('color','green')
+            } else {
+              $(this).css('color','red')
+            }
+          })
+        };
+      };
+  </script>
+{% endblock %}

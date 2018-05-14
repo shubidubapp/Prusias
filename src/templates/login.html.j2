@@ -1,0 +1,21 @@
+{% extends "base.html.j2" %}
+{% import "messageflash.html.j2" as messageflash %}
+
+{% block styles %}
+{{ super() }}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/login.css') }}">
+{% endblock %}
+
+{% block content %}
+<form class="form-signin" method="post" action="{{url_for('login_post')}}">
+  <h1 class="h3 mb-3 font-weight-normal text-center">Login</h1>
+  {{messageflash.flash()}}
+
+   {{ form.csrf_token }}
+   <label for="inputUsername" class="sr-only">Username</label>
+   {{ form.username(class_="form-control", placeholder="username") }}
+   <label for="inputPassword" class="sr-only">Password</label>
+   {{ form.password(class_="form-control", placeholder="password") }}
+   <button class="btn btn-lg btn-success btn-block" type="submit">Login</button>
+</form>
+{% endblock %}

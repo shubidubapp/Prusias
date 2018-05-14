@@ -3,6 +3,7 @@
   <head>
     <meta charset="utf-8">
     {% block styles %}
+    <link rel="stylesheet" href="http://fonts.googleapis.com/css?family=Audiowide">
     <link rel="stylesheet" href="{{ url_for('static', filename='css/bootstrap.min.css') }}">
     <link rel="stylesheet" href="{{ url_for('static', filename='css/all.css') }}">
     <link rel="stylesheet" href="{{ url_for('static', filename='css/base.css') }}">
@@ -11,21 +12,25 @@
   </head>
   <body>
 {% block navbar %}
-         <nav class="navbar navbar-dark bg-dark fixed-top">
+         <nav class="navbar navbar-dark fixed-top">
         <div class="container-fluid">
-            <div class="navbar-header">
-              <a class="navbar-brand" href="{{ url_for('index') }}">WebSiteName</a>
-            </div>
-        <form>
             {% if current_user.username%}
+                <div class="navbar-header">
+                  <a class="badger" href="{{ url_for('u', username= current_user.username) }}">PRUSIAS</a>
+                </div>
                 <div id="logout">
-                    <a href="{{ url_for('logout') }}" class="button">Logout</a>
+                    <a href="{{ url_for('logout') }}" class="button logregbutton">Logout</a>
                 </div>
             {% else %}
-                    <a href="{{ url_for('login_get') }}" class="button">Login</a>
-                    <a href="{{ url_for('register_get') }}" class="button">Register</a>
+                    <div class="navbar-header">
+                      <a class="badger" href="{{ url_for('index') }}">PRUSIAS</a>
+                    </div>
+                    <div>
+                      <a  class="logregbutton" href="{{ url_for('login_get') }}" class="button">Login</a>
+                      <a  class="logregbutton" href="{{ url_for('register_get') }}" class="button">Register</a>
+                    </div>
             {% endif %}
-        </form>
+
         </div>
      </nav>
 

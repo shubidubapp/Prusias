@@ -1,5 +1,36 @@
 nav{
+    background-color: #dc0c4c;
     overflow: hidden;
     width: 100%;
+    padding-bottom: 15px;
 }
 
+.logregbutton, .logregbutton:hover{
+  color: #afc307;
+  font-size: 18px;
+  font-weight: bold;
+  margin-left: 70&;
+  padding-right: 20px;
+}
+
+.backimage{
+  margin-top: 15%;
+  margin-left: 15%;
+  height: 90%;
+}
+
+.slogan{
+  margin-top: 50%;
+  padding-right: 20%;
+  font-size: 30px;
+  font-family: Audiowide;
+  text-align: center;
+  text-transform:uppercase;
+  color: #dc0c4c;
+}
+
+.badger, .badger:hover{
+  color: #afc307;
+  font-size: 25px;
+  font-weight: bold;
+}

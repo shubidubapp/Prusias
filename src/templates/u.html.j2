@@ -4,7 +4,6 @@
 {% block content %}
 <div class="container" style="padding-top:50px">
 {{messageflash.flash()}}
-  <a href="{{ url_for('logout') }}"> Logout </a> <br>
   User: {{ current_user.username }}
   Gold: <span id='gold'> {{ current_user.gold | int }} </span>
   Meat: <span id='meat'> {{ current_user.meat | int }} </span>

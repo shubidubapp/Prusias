@@ -5,11 +5,30 @@
     {% block styles %}
     <link rel="stylesheet" href="{{ url_for('static', filename='css/bootstrap.min.css') }}">
     <link rel="stylesheet" href="{{ url_for('static', filename='css/all.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/base.css') }}">
     <script src="{{ url_for('static', filename='js/jquery.min.js') }}"></script>
     {% endblock %}
   </head>
   <body>
 {% block navbar %}
+         <nav class="navbar navbar-dark bg-dark fixed-top">
+        <div class="container-fluid">
+            <div class="navbar-header">
+              <a class="navbar-brand" href="{{ url_for('index') }}">WebSiteName</a>
+            </div>
+        <form>
+            {% if current_user.username%}
+                <div id="logout">
+                    <a href="{{ url_for('logout') }}" class="button">Logout</a>
+                </div>
+            {% else %}
+                    <a href="{{ url_for('login_get') }}" class="button">Login</a>
+                    <a href="{{ url_for('register_get') }}" class="button">Register</a>
+            {% endif %}
+        </form>
+        </div>
+     </nav>
+
 {% endblock %}
 
     {% block content %}

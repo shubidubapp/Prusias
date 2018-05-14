@@ -137,11 +137,12 @@ def update_(username):
 @login_required
 def logout():
     logout_user()
-    return 'OK'
+    return redirect(url_for('index'))
 
 
 @app.route("/dbc")
 def createdb():
     db.drop_all()
     db.create_all()
-    return "OK"
+    flash("Database created", "success")
+    return redirect(url_for('login_get'))

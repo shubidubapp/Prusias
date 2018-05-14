@@ -11,15 +11,15 @@
   <ul style="list-style-type : none; padding: 0; margin: 0;">
     {% for building, building_form in buildings %}
         <div class="row filter">
-              <li style="background: url("{{ url_for('static', filename='img/meatmine.png') }}")">{{ building.building_type | capitalize}} Building,
+              <li style="background: url('{{ url_for('static', filename='img/barnyard.png') }}') no-repeat left top; height: 108px; padding-left: 64px; padding-top:5px;">{{ building.building_type | capitalize}} Building,
                 Level: {{ building.level }},
                 Upgrade:
                 Gold: <span class='building_gold'>{{ building.upgrade_gold }}</span>
                 Meat: <span class='building_meat'>{{ building.upgrade_meat }}</span>
                 Production: <span class='production_{{ building.building_type }}'>{{ building.production_speed }}</span>/s
-                 <form method="post" action="{{url_for('upgrade_building')}}">
+                 <form style="padding-left: 10px;" method="post" action="{{url_for('upgrade_building')}}">
                    {{ building_form.id }}
-                   <input type="submit" value="Upgrade!">
+                   <input  type="submit" value="Upgrade!">
                  </form>
               </li>
       	</div>

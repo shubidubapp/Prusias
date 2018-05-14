@@ -87,9 +87,9 @@ def register_post():
 @app.route("/upgradeBuilding", methods=['POST'])
 def upgrade_building():
     form = BuildingForm(request.form)
-    user_ = current_user
-    building = Building.query.filter_by(user=user_, id=form.id.data).first()
+    building = Building.query.filter_by(user=current_user, id=form.id.data).first()
     if form.validate() and building:
+        current_user.produce()
         result = building.upgrade()
         if result:
             db.session.commit()
@@ -98,16 +98,16 @@ def upgrade_building():
             flash('Fail!', 'warning')
     else:
         flash_errors(form)
-    return redirect(url_for('u', username=user_.username))
+    return redirect(url_for('u', username=current_user.username))
 
 
 @app.route("/produceSoldier", methods=['POST'])
 def produce_soldier():
     form = SoldierBuildingForm(request.form)
-    user_ = current_user
-    building = Building.query.filter_by(user=user_, id=form.id.data).first()
-    if form.validate() and building and isinstance(building, SoldierBuilding):
+    building = Building.query.filter_by(user=current_user, id=form.id.data).first()
+    if form.validate():
         if building.level > 0:
+            current_user.produce()
             result = building.produce(form.count.data)
             if result:
                 db.session.commit()
@@ -119,7 +119,8 @@ def produce_soldier():
 
     else:
         flash_errors(form)
-    return redirect(url_for('u', username=user_.username))
+    return redirect(url_for('u', username=current_user.username))
+
 
 @login_required
 @app.route("/u/<username>")
@@ -142,15 +143,6 @@ def u(username):
             return "Private!"
         else:
             abort(404)
-
-
-@app.route("/u/<username>/_update")
-def update_(username):
-    user_ = current_user
-    if user_.is_authenticated and user_.username == username:
-        user_.produce()
-        db.session.commit()
-    return jsonify({'meat': int(user_.meat), 'gold': int(user_.gold)})
 
 
 @app.route("/logout")

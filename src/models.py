@@ -70,7 +70,7 @@ class Building(db.Model):
 class GoldBuilding(Building):
     __mapper_args__ = {'polymorphic_identity': 'gold'}
     base_production_speed = 4
-    icon = '/static/img/barnyard.png'
+    icon = '/static/img/goldmine.png'
 
     def get_production_speed(self):
         return self.base_production_speed ** self.level

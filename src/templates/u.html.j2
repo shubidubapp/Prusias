@@ -2,67 +2,115 @@
 {% import "messageflash.html.j2" as messageflash %}
 
 {% block content %}
-<div class="container" style="padding-top:70px">
-{{messageflash.flash()}}
-  User: {{ current_user.username }}
-  Gold: <span id='gold'> {{ current_user.gold | int }} </span>
-  Meat: <span id='meat'> {{ current_user.meat | int }} </span>
-  <ul style="list-style-type : none; padding: 0; margin: 0;">
-    {% for building, building_form in buildings %}
-        <div class="row filter">
-              <li style="background: url('{{ building.icon }}') no-repeat left top; height: 108px; padding-left: 64px; padding-top:5px;">{{ building.building_type | capitalize}} Building,
-                Level: {{ building.level }},
-                Upgrade:
-                Gold: <span class='building_gold'>{{ building.upgrade_gold }}</span>
-                Meat: <span class='building_meat'>{{ building.upgrade_meat }}</span>
-                Production: <span class='production_{{ building.building_type }}'>{{ building.get_production_speed() }}</span>/s
-                 <form style="padding-left: 10px;" method="post" action="{{url_for('upgrade_building')}}">
-                   {{ building_form.id }}
-                   <input  type="submit" value="Upgrade!">
-                 </form>
-              </li>
-      	</div>
-    {% endfor %}
-  </ul>
-</div>
+    <div class="container" style="padding-top:70px">
+        {{ messageflash.flash() }}
+        User: {{ current_user.username }}
+        Gold: <span id='gold'> {{ current_user.gold | int }} </span>
+        Meat: <span id='meat'> {{ current_user.meat | int }} </span>
+        <ul style="list-style-type : none; padding: 0; margin: 0;">
+            {% for building, building_form in resource_buildings %}
+                <div class="row filter">
+                    <li style="background: url('{{ building.icon }}') no-repeat left top; height: 108px; padding-left: 64px; padding-top:5px;">{{ building.building_type | capitalize }}
+                        Building,
+                        Level: {{ building.level }},
+                        Upgrade:
+                        Gold: <span class='building_gold'>{{ building.upgrade_gold() }}</span>
+                        Meat: <span class='building_meat'>{{ building.upgrade_meat() }}</span>
+                        Production: <span
+                                class='production_{{ building.building_type }}'>{{ building.get_production_speed() }}</span>/s
+                        <form style="padding-left: 10px;" method="post" action="{{ url_for('upgrade_building') }}">
+                            {{ building_form.id }}
+                            {{ building_form.csrf_token }}
+                            <input type="submit" value="Upgrade!">
+                        </form>
+                    </li>
+                </div>
+            {% endfor %}
+            {% for building, building_form, soldier_form in soldier_buildings %}
+                <div class="row filter">
+                    <li style="background: url('{{ building.icon }}') no-repeat left top; height: 108px; padding-left: 64px; padding-top:5px;">{{ building.building_type | capitalize }}
+                        Building,
+                        Level: {{ building.level }},
+                        Upgrade:
+                        Gold: <span class='building_gold'>{{ building.upgrade_gold() }}</span>
+                        Meat: <span class='building_meat'>{{ building.upgrade_meat() }}</span>
+                        {{ building.building_type | capitalize }} Count: <span
+                                class='count{{ building.building_type }}'>{{ building.count() }}</span>
+                        <form style="padding-left: 10px;" method="post" action="{{ url_for('upgrade_building') }}">
+                            {{ building_form.id }}
+                            <input type="submit" value="Upgrade!">
+                        </form>
+                        {% if building.level > 0 %}
+                            <form style="padding-left: 10px;" method="post" class="soldier_form"
+                                  action="{{ url_for('produce_soldier') }}">
+                                Gold Per Unit: <span class='soldier_gold'>{{ building.gold_cost() }}</span>,
+                                Meat Per Unit: <span class='soldier_meat'>{{ building.meat_cost() }}</span>
+                                {{ soldier_form.id }}
+                                {{ soldier_form.csrf_token }}
+                                <label for="inputCount" class="sr-only">Count:</label>
+                                {{ soldier_form.count(class_="form_count", placeholder="0") }}
+                                <input type="submit" value="Train!">
+                            </form>
+                        {% endif %}
+                    </li>
+                </div>
+            {% endfor %}
+        </ul>
+    </div>
 {% endblock %}
 
 {% block scripts %}
-  {{ super() }}
-  <script type="text/javascript">
-      $(document).ready(main);
-      var interval = 2;
-      function main() {
-        update_produce();
-        var updater = setInterval(update_produce, 1000 * interval);
-        function update_produce() {
-          window.new_gold = parseInt($('#gold').html());
-          $('span.production_gold').each(function() {
-            var increase = parseInt($(this).html()) * window.interval
-            window.new_gold += increase;
-          });
-          window.new_meat = parseInt($('#meat').html());
-          $('span.production_meat').each(function() {
-            var increase = parseInt($(this).html()) * window.interval
-            window.new_meat += increase;
-          });
-          $('#gold').html(window.new_gold);
-          $('#meat').html(window.new_meat);
-          $('span.building_gold').each(function() {
-            if(window.new_gold > $(this).html()){
-              $(this).css('color','green')
-            } else {
-              $(this).css('color','red')
-            }
-          });
-          $('span.building_meat').each(function() {
-            if(window.new_meat > $(this).html()){
-              $(this).css('color','green')
-            } else {
-              $(this).css('color','red')
-            }
-          })
+    {{ super() }}
+    <script type="text/javascript">
+        $(document).ready(main);
+        var interval = 2;
+
+        function main() {
+            update_produce();
+            var updater = setInterval(update_produce, 1000 * interval);
+
+            function update_produce() {
+                window.new_gold = parseInt($('#gold').html());
+                $('span.production_gold').each(function () {
+                    var increase = parseInt($(this).html()) * window.interval
+                    window.new_gold += increase;
+                });
+                window.new_meat = parseInt($('#meat').html());
+                $('span.production_meat').each(function () {
+                    var increase = parseInt($(this).html()) * window.interval
+                    window.new_meat += increase;
+                });
+                $('#gold').html(window.new_gold);
+                $('#meat').html(window.new_meat);
+                $('span.building_gold').each(function () {
+                    if (window.new_gold > $(this).html()) {
+                        $(this).css('color', 'green')
+                    } else {
+                        $(this).css('color', 'red')
+                    }
+                });
+                $('span.building_meat').each(function () {
+                    if (window.new_meat > $(this).html()) {
+                        $(this).css('color', 'green')
+                    } else {
+                        $(this).css('color', 'red')
+                    }
+                });
+                $('form.soldier_form').each(function () {
+                    gold = parseInt($(this).find('span.soldier_gold').html());
+                    meat = parseInt($(this).find('span.soldier_meat').html());
+                    count = $(this).find('.form_count');
+                    amount_gold = window.new_gold / gold - 1;
+                    amount_meat = window.new_meat / meat - 1;
+                    if (amount_gold < amount_meat) {
+                        count.attr('placeholder', Math.floor(amount_gold))
+                    }
+                else
+                    {
+                        count.attr('placeholder', Math.floor(amount_meat))
+                    }
+                })
+            };
         };
-      };
-  </script>
+    </script>
 {% endblock %}

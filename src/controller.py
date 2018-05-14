@@ -1,8 +1,8 @@
 from src import app, db, login_manager
 from flask import render_template, redirect, url_for, request, session, flash, abort, jsonify
 from flask_login import login_user, current_user, login_required, logout_user
-from .forms import RegisterForm, LoginForm, BuildingForm
-from .models import User, Building, GoldBuilding, MeatBuilding, Barracks
+from .forms import RegisterForm, LoginForm, BuildingForm, SoldierBuildingForm
+from .models import User, Building, GoldBuilding, MeatBuilding, SwordsmanBuilding, ResourceBuilding ,SoldierBuilding
 from werkzeug.security import generate_password_hash, check_password_hash
 
 
@@ -14,8 +14,7 @@ def load_user(user_id):
 def flash_errors(form):
     for field, errors in form.errors.items():
         for error in errors:
-            flash(u"Error in the %s field - %s" % (
-                getattr(form, field).label.text,
+            flash(u"%s" % (
                 error
             ), category='danger')
 
@@ -70,7 +69,9 @@ def register_post():
             user.password = generate_password_hash(form.password.data)
             user.email = form.email.data
             db.session.add(user)
-            user.buildings(MeatBuilding(), GoldBuilding(), Barracks())
+            user.buildings.append(MeatBuilding())
+            user.buildings.append(GoldBuilding())
+            user.buildings.append(SwordsmanBuilding())
             user.set_time()
             db.session.commit()
             login_user(user)
@@ -88,25 +89,52 @@ def upgrade_building():
     form = BuildingForm(request.form)
     user_ = current_user
     building = Building.query.filter_by(user=user_, id=form.id.data).first()
-    if building:
+    if form.validate() and building:
         result = building.upgrade()
         if result:
             db.session.commit()
             flash('Success!', 'success')
         else:
             flash('Fail!', 'warning')
-        return redirect(url_for('u', username=user_.username))
+    else:
+        flash_errors(form)
+    return redirect(url_for('u', username=user_.username))
 
+
+@app.route("/produceSoldier", methods=['POST'])
+def produce_soldier():
+    form = SoldierBuildingForm(request.form)
+    user_ = current_user
+    building = Building.query.filter_by(user=user_, id=form.id.data).first()
+    if form.validate() and building and isinstance(building, SoldierBuilding):
+        if building.level > 0:
+            result = building.produce(form.count.data)
+            if result:
+                db.session.commit()
+                flash('Success!', 'success')
+            else:
+                flash('Fail!', 'warning')
+        else:
+            flash('You should build this building first!')
+
+    else:
+        flash_errors(form)
+    return redirect(url_for('u', username=user_.username))
 
 @login_required
 @app.route("/u/<username>")
 def u(username):
-    user_ = current_user
-    if user_.is_authenticated and user_.username == username:
-        user_.produce()
+    if current_user.is_authenticated and current_user.username == username:
+        current_user.produce()
         db.session.commit()
-        buildings = [(building, BuildingForm(id=building.id)) for building in user_.buildings]
-        return render_template("u.html.j2", buildings=buildings)
+        resource_buildings = []
+        soldier_buildings = []
+        for building in current_user.buildings:
+            if isinstance(building, ResourceBuilding):
+                resource_buildings.append((building, BuildingForm(id=building.id)))
+            else:
+                soldier_buildings.append((building, BuildingForm(id=building.id), SoldierBuildingForm(id=building.id)))
+        return render_template("u.html.j2", resource_buildings=resource_buildings, soldier_buildings=soldier_buildings)
 
     else:
         searched_user = User.query.filter_by(username=username).first()

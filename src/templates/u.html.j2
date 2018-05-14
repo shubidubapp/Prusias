@@ -8,10 +8,10 @@
   User: {{ current_user.username }}
   Gold: <span id='gold'> {{ current_user.gold | int }} </span>
   Meat: <span id='meat'> {{ current_user.meat | int }} </span>
-  <ul>
+  <ul style="list-style-type : none; padding: 0; margin: 0;">
     {% for building, building_form in buildings %}
         <div class="row filter">
-              <li>{{ building.building_type | capitalize}} Building,
+              <li style="background: url("{{ url_for('static', filename='img/meatmine.png') }}")">{{ building.building_type | capitalize}} Building,
                 Level: {{ building.level }},
                 Upgrade:
                 Gold: <span class='building_gold'>{{ building.upgrade_gold }}</span>

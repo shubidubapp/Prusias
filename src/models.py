@@ -49,7 +49,7 @@ class Building(db.Model):
     user = db.relationship('User', back_populates='buildings')
     __mapper_args__ = {'polymorphic_on': building_type, 'polymorphic_identity': 'Building'}
 
-    def _production_speed(self):
+    def get_production_speed(self):
         return 0
 
     def upgrade(self):
@@ -59,7 +59,7 @@ class Building(db.Model):
             self.level += 1
             self.upgrade_gold = self.upgrade_gold*10
             self.upgrade_meat = self.upgrade_meat*10
-            self.production_speed = self._production_speed()
+            self.production_speed = self.get_production_speed()
             return True
         else:
             return False
@@ -70,31 +70,28 @@ class Building(db.Model):
 class GoldBuilding(Building):
     __mapper_args__ = {'polymorphic_identity': 'gold'}
     base_production_speed = 4
+    icon = '/static/img/barnyard.png'
 
-    def set_production_speed(self):
-        self.production_speed = self._production_speed()
-
-    def _production_speed(self):
+    def get_production_speed(self):
         return self.base_production_speed ** self.level
 
     def produce(self):
-        self.user.gold += self._production_speed()*(time() - self.user.last_produce)
+        self.user.gold += self.get_production_speed()*(time() - self.user.last_produce)
 
 
 class MeatBuilding(Building):
     __mapper_args__ = {'polymorphic_identity': 'meat'}
     base_production_speed = 5
+    icon = '/static/img/barnyard.png'
 
-    def set_production_speed(self):
-        self.production_speed = self._production_speed()
-
-    def _production_speed(self):
+    def get_production_speed(self):
         return self.base_production_speed ** self.level
 
     def produce(self):
-        self.user.meat += self._production_speed()*(time() - self.user.last_produce)
+        self.user.meat += self.get_production_speed()*(time() - self.user.last_produce)
 
 
-class Barracks(db.Model):
+class Barracks(Building):
     __table_name__ = 'Barracks'
-    id = db.Column(db.Integer, primary_key=True)
+    __mapper_args__ = {'polymorphic_identity': 'barracks'}
+    icon = '/static/img/armytower.png'

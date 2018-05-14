@@ -2,7 +2,7 @@ from src import app, db, login_manager
 from flask import render_template, redirect, url_for, request, session, flash, abort, jsonify
 from flask_login import login_user, current_user, login_required, logout_user
 from .forms import RegisterForm, LoginForm, BuildingForm
-from .models import User, Building, GoldBuilding, MeatBuilding
+from .models import User, Building, GoldBuilding, MeatBuilding, Barracks
 from werkzeug.security import generate_password_hash, check_password_hash
 
 
@@ -72,9 +72,13 @@ def register_post():
             db.session.add(user)
             meat_building = MeatBuilding()
             gold_building = GoldBuilding()
-            db.session.add(meat_building, gold_building)
+            barracks = Barracks()
+            db.session.add(meat_building)
+            db.session.add(gold_building)
+            db.session.add(barracks)
             user.buildings.append(meat_building)
             user.buildings.append(gold_building)
+            user.buildings.append(barracks)
             user.set_time()
             db.session.commit()
             login_user(user)

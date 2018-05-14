@@ -16,14 +16,14 @@
         <div class="container-fluid">
             {% if current_user.username%}
                 <div class="navbar-header">
-                  <a class="badger" href="{{ url_for('u', username= current_user.username) }}">PRUSIAS</a>
+                  <a href="{{ url_for('u', username= current_user.username) }}"><img src="/static/img/prusiastext.png" alt="prusias-badge"></a>
                 </div>
                 <div id="logout">
                     <a href="{{ url_for('logout') }}" class="button logregbutton">Logout</a>
                 </div>
             {% else %}
                     <div class="navbar-header">
-                      <a class="badger" href="{{ url_for('index') }}">PRUSIAS</a>
+                      <a href="{{ url_for('index') }}"><img src="/static/img/prusiastext.png" alt="prusias-icon"></a>
                     </div>
                     <div>
                       <a  class="logregbutton" href="{{ url_for('login_get') }}" class="button">Login</a>

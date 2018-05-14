@@ -2,7 +2,6 @@ nav{
     background-color: #dc0c4c;
     overflow: hidden;
     width: 100%;
-    padding-bottom: 15px;
 }
 
 .logregbutton, .logregbutton:hover{
@@ -27,10 +26,4 @@ nav{
   text-align: center;
   text-transform:uppercase;
   color: #dc0c4c;
-}
-
-.badger, .badger:hover{
-  color: #afc307;
-  font-size: 25px;
-  font-weight: bold;
 }

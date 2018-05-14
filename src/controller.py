@@ -25,13 +25,13 @@ def index():
     return render_template("index.html.j2")
 
 
-@app.route("/register", methods=["GET"])
+@app.route("/register/", methods=["GET"])
 def register_get():
     form = RegisterForm()
     return render_template("register.html.j2", form=form)
 
 
-@app.route("/login", methods=["GET"])
+@app.route("/login/", methods=["GET"])
 def login_get():
     if current_user.is_authenticated:
         flash("You are already logged in", "success")
@@ -69,8 +69,13 @@ def register_post():
             user.username = form.username.data
             user.password = generate_password_hash(form.password.data)
             user.email = form.email.data
-            user.buildings = [MeatBuilding(), GoldBuilding()]
             db.session.add(user)
+            meat_building = MeatBuilding()
+            gold_building = GoldBuilding()
+            db.session.add(meat_building, gold_building)
+            user.buildings.append(meat_building)
+            user.buildings.append(gold_building)
+            user.set_time()
             db.session.commit()
             login_user(user)
             flash('Register Successful, now you are logged in!', category='success')

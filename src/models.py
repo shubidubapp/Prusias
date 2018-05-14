@@ -13,8 +13,7 @@ class User(db.Model):
     meat = db.Column(db.Float, nullable=False, default=100)
     last_produce = db.Column(db.Float, default=None)
 
-    def __init__(self):
-        self.buildings = [MeatBuilding(), GoldBuilding()]
+    def set_time(self):
         self.last_produce = time()
 
     def produce(self):
@@ -72,7 +71,7 @@ class GoldBuilding(Building):
     __mapper_args__ = {'polymorphic_identity': 'gold'}
     base_production_speed = 4
 
-    def __init__(self):
+    def set_production_speed(self):
         self.production_speed = self._production_speed()
 
     def _production_speed(self):
@@ -86,7 +85,7 @@ class MeatBuilding(Building):
     __mapper_args__ = {'polymorphic_identity': 'meat'}
     base_production_speed = 5
 
-    def __init__(self):
+    def set_production_speed(self):
         self.production_speed = self._production_speed()
 
     def _production_speed(self):

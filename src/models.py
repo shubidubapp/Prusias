@@ -102,8 +102,8 @@ class SoldierBuilding(Building):
 
 class SwordsmanBuilding(SoldierBuilding):
     __mapper_args__ = {'polymorphic_identity': 'swordsman'}
-    base_gold_cost = 100
-    base_meat_cost = 200
+    base_gold_cost = 200
+    base_meat_cost = 300
     base_upgrade_gold = 150
     base_upgrade_meat = 125
     cost_reducement_multiplier = 1.2

@@ -16,9 +16,10 @@
         <div class="container-fluid">
             {% if current_user.username%}
                 <div class="navbar-header">
-                  <a href="{{ url_for('u', username= current_user.username) }}"><img src="/static/img/prusiastext.png" alt="prusias-badge"></a>
+                  <a href="{{ url_for('index') }}"><img src="/static/img/prusiastext.png" alt="prusias-badge"></a>
                 </div>
-                <div id="logout">
+                <div>
+                    <a href="{{ url_for('u', username = current_user.username) }}" class="logregbutton"> {{ current_user.username }}</a>
                     <a href="{{ url_for('logout') }}" class="button logregbutton">Logout</a>
                 </div>
             {% else %}

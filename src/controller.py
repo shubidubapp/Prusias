@@ -5,7 +5,7 @@ from .forms import RegisterForm, LoginForm, BuildingForm, SoldierBuildingForm, M
 from .models import User, Building, GoldBuilding, MeatBuilding, SwordsmanBuilding, ResourceBuilding
 from werkzeug.security import generate_password_hash, check_password_hash
 import random
-from sqlalchemy.sql import func
+from sqlalchemy.sql import func, desc
 
 
 @login_manager.user_loader
@@ -164,7 +164,8 @@ def get_match(username):
                 if user == current_user:
                     highscore_table.append((rank, current_user.username, score))
             rank += 1
-        return render_template("match.html.j2", random_user=random_user, form=form, highscore_table=highscore_table)
+            top10_count -= 1
+        return render_template("match.html.j2", opponent_user=random_user, form=form, highscore_table=highscore_table)
 
 
 @login_required
@@ -198,8 +199,9 @@ def createdb():
 
 def get_highscore_table():
     return db.session.query(User, (User.win_rate * func.sum(Building.level) /
-                                            func.count(Building.id) * (User.swordsman + 1)).label("score")). \
-                                            filter(User.id == Building.user_id).group_by(User.id).all()
+                                   func.count(Building.id) * (User.swordsman + 1)).label("score")). \
+                                    filter(User.id == Building.user_id).group_by(User.id). \
+                                    order_by(desc("score")).all()
 
 
 @app.route("/dumdum")

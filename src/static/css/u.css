@@ -14,6 +14,18 @@ body{
   margin-left: 20%;
   position: fixed;
 }
+
+.match_button{
+  color: #afc307;
+  background-color: #dc0c4c;
+  font-size: 18px;
+  border: 2px solid #dc0c4c;
+  border-radius: 6px;
+  margin-top: 8%;
+  margin-left: 27%;
+  position: fixed;
+}
+
 .button_meat{
   margin-left: 14%;
   margin-top: 25%;

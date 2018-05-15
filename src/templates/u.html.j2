@@ -14,6 +14,9 @@
       Gold: <span id='gold' class="humanize"> {{ current_user.gold | int }} </span>
       Meat: <span id='meat' class="humanize"> {{ current_user.meat | int }} </span>
     </div>
+    <div class="button">
+      <button class="match_button" type="button" name="match">Match!</button>
+    </div>
     <ul style="list-style-type : none; padding: 0; margin: 0;">
       {% for building, building_form in resource_buildings %}
       <div class="row filter">

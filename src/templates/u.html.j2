@@ -20,9 +20,9 @@
     </div>
     <div class="row">
       <div class="col-md-4 offset-md-4 text-center">
-        <div style="padding-top: 5px;" class="button">
-          <a class="match_button" type="button" href="{{ url_for("get_match") }}" name="match">Match!</a>
-        </div>
+          <form method="get" action="{{ url_for('get_match') }}" >
+            <input class="btn btn-md btn-success match_button" type="submit" value="Match!">
+          </form>
       </div>
     </div>
     <div class="row">
@@ -34,15 +34,17 @@
       {% for building, building_form in resource_buildings %}
           {% if building.building_type == 'gold' %}
           <div class="button_{{ building.building_type }} col-xs-6 col-md-4" >
-              <img src="/static/img/goldminefinal1.png" alt="goldmine"><br>
-              {{ building.building_type | capitalize }} Building, <br>
-              Level: {{ building.level }},<br>
-              Upgrade:
-              Gold: <span class='building_gold humanize'>{{ building.upgrade_gold() }}</span>,
-              Meat: <span class='building_meat humanize'>{{ building.upgrade_meat() }}</span><br>
-              Production: <span
-              class='production_{{ building.building_type }} humanize'>{{ building.get_production_speed() }}</span>/s<br>
-              <form style="padding-left: 10px;" method="post" action="{{ url_for('upgrade_building') }}">
+              <img src="/static/img/goldminefinal1.png" alt="goldmine">
+              <p class="col-md-5 bg_stats">
+                {{ building.building_type | capitalize }} Building,
+                Level: {{ building.level }},<br>
+                Upgrade:
+                Gold: <span class='building_gold humanize'>{{ building.upgrade_gold() }}</span>,
+                Meat: <span class='building_meat humanize'>{{ building.upgrade_meat() }}</span><br>
+                Production: <span
+                class='production_{{ building.building_type }} humanize'>{{ building.get_production_speed() }}</span>/s <br>
+              </p>
+              <form method="post" action="{{ url_for('upgrade_building') }}">
                 {{ building_form.id }}
                 {{ building_form.csrf_token }}
                 <input type="submit" value="Upgrade!">
@@ -51,15 +53,17 @@
           {% endif %}
           {% if building.building_type == 'meat' %}
           <div class="button_{{ building.building_type }} col-xs-6 col-md-4">
-            <img style="padding-top:10%;" src="/static/img/barnyardfinal.png" alt="goldmine"><br>
-            {{ building.building_type | capitalize }} Building, <br>
-            Level: {{ building.level }},<br>
-            Upgrade:
-            Gold: <span class='building_gold humanize'>{{ building.upgrade_gold() }}</span>,
-            Meat: <span class='building_meat humanize'>{{ building.upgrade_meat() }}</span><br>
-            Production: <span
-            class='production_{{ building.building_type }} humanize'>{{ building.get_production_speed() }}</span>/s<br>
-            <form style="padding-left: 10px;" method="post" action="{{ url_for('upgrade_building') }}">
+            <img style="padding-top:10%;" src="/static/img/barnyardfinal.png" alt="goldmine">
+            <p class="col-md-5 bg_stats">
+              {{ building.building_type | capitalize }} Building,
+              Level: {{ building.level }},<br>
+              Upgrade:
+              Gold: <span class='building_gold humanize'>{{ building.upgrade_gold() }}</span>,
+              Meat: <span class='building_meat humanize'>{{ building.upgrade_meat() }}</span><br>
+              Production: <span
+              class='production_{{ building.building_type }} humanize'>{{ building.get_production_speed() }}</span>/s<br>
+            </p>
+            <form method="post" action="{{ url_for('upgrade_building') }}">
               {{ building_form.id }}
               {{ building_form.csrf_token }}
               <input type="submit" value="Upgrade!">
@@ -70,21 +74,18 @@
       {% for building, building_form, soldier_form in soldier_buildings %}
       {% if building.building_type == 'swordsman' %}
         <div class="button_{{ building.building_type }} col-xs-6 col-md-4">
-          <img src="/static/img/armytowerfinal.png" alt="swordsman"><br>
-          {{ building.building_type | capitalize }} Building,<br>
-          Level: {{ building.level }},<br>
-          Upgrade:
-          Gold: <span class='building_gold humanize'>{{ building.upgrade_gold() }}</span>
-          Meat: <span class='building_meat humanize'>{{ building.upgrade_meat() }}</span><br>
-          {{ building.building_type | capitalize }} Count: <span
-          class='count{{ building.building_type }} humanize'>{{ building.count() }}</span>
-          <form style="padding-left: 10px;" method="post" action="{{ url_for('upgrade_building') }}">
-            {{ building_form.id }}
-            {{ building_form.csrf_token }}
-            <input type="submit" value="Upgrade!">
-          </form><br>
+          <img src="/static/img/armytowerfinal.png" alt="swordsman">
+          <p class="col-md-5 bg_stats">
+            {{ building.building_type | capitalize }} Building,
+            Level: {{ building.level }},<br>
+            Upgrade:
+            Gold: <span class='building_gold humanize'>{{ building.upgrade_gold() }}</span>
+            Meat: <span class='building_meat humanize'>{{ building.upgrade_meat() }}</span><br>
+            {{ building.building_type | capitalize }} Count: <span
+            class='count{{ building.building_type }} humanize'>{{ building.count() }}</span>
+          </p>
           {% if building.level > 0 %}
-          <form style="margin-top: -20px;"method="post" class="soldier_form"
+          <form method="post" class="soldier_form bg_stats"
           action="{{ url_for('produce_soldier') }}">
           Gold Per Unit: <span class='soldier_gold'>{{ building.gold_cost() }}</span>,
           Meat Per Unit: <span class='soldier_meat'>{{ building.meat_cost() }}</span>
@@ -95,6 +96,11 @@
           <input type="submit" value="Train!">
         </form>
         {% endif %}
+          <form style="padding-top: 5px;" method="post" action="{{ url_for('upgrade_building') }}">
+            {{ building_form.id }}
+            {{ building_form.csrf_token }}
+            <input type="submit" value="Upgrade!">
+          </form><br>
       </div>
       {% endif %}
     </div>

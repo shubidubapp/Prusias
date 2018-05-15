@@ -158,3 +158,8 @@ def createdb():
     db.create_all()
     flash("Database created", "success")
     return redirect(url_for('login_get'))
+
+@app.route("/match")
+def match():
+    return render_template("match.html.j2")
+

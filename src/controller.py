@@ -95,9 +95,9 @@ def upgrade_building():
         result = building.upgrade()
         if result:
             db.session.commit()
-            flash('Success!', 'success')
+            flash('Building upgraded successfully', 'success')
         else:
-            flash('Fail!', 'warning')
+            flash("You don't have enough resources.", 'warning')
     else:
         flash_errors(form)
     return redirect(url_for('u', username=current_user.username))
@@ -113,9 +113,9 @@ def produce_soldier():
             result = building.produce(form.count.data)
             if result:
                 db.session.commit()
-                flash('Success!', 'success')
+                flash('{} soldier trained successfully'.format(form.count.data), 'success')
             else:
-                flash('Fail!', 'warning')
+                flash("You don't have enough resources.", 'warning')
         else:
             flash('You should build this building first!')
 
@@ -148,34 +148,65 @@ def u(username):
 
 
 @login_required
-@app.route("/u/<username>/match", methods=['GET'])
-def get_match(username):
-    if current_user.username == username:
+@app.route("/match", methods=['GET'])
+def get_match():
+    if current_user.swordsman > 0:
         random_user = get_opponent()
         form = MatchForm(user_id=current_user.id, opponent_id=random_user.id)
-        highscores = get_highscore_table()
-        top10_count = 10
-        highscore_table = []
-        rank = 0
-        for user, score in highscores:
-            if top10_count > 0:
-                highscore_table.append((rank, user.username, score))
-            else:
-                if user == current_user:
-                    highscore_table.append((rank, current_user.username, score))
-            rank += 1
-            top10_count -= 1
+        highscore_table = get_highscore_table()
         return render_template("match.html.j2", opponent_user=random_user, form=form, highscore_table=highscore_table)
+    else:
+        flash("You should have some soldiers to fight", "warning")
+        return redirect(url_for('u', username=current_user.username))
 
 
 @login_required
-@app.route("/u/<username>/match", methods=['POST'])
-def post_match(username):
+@app.route("/match", methods=['POST'])
+def post_match():
     form = MatchForm(request.form)
-    if current_user.username == username and form.validate():
-        opponent_user = User.query.filter_by(id=form.opponent_id.data)
-        winner = random.choices([0, 1], weights=[current_user.swordsman, opponent_user.swordsman])
-        # if winner == 0:
+    if form.validate():
+        if current_user.swordsman > 0:
+            opponent_user = User.query.filter_by(id=form.opponent_id.data).first()
+            weight_0 = current_user.swordsman + 1 / (current_user.swordsman + opponent_user.swordsman + 1)
+            weight_1 = opponent_user.swordsman + 1 / (current_user.swordsman + opponent_user.swordsman + 1)
+            print(weight_0)
+            print(weight_1)
+            winner_r = random.choices([0, 1], weights=[weight_0, weight_1])[0]
+            if winner_r == 0:
+                winner = current_user
+                loser = opponent_user
+            else:
+                winner = opponent_user
+                loser = current_user
+            max_diff = current_user.swordsman if current_user.swordsman > opponent_user.swordsman else opponent_user.swordsman
+            difference = abs(opponent_user.swordsman - current_user.swordsman)
+            lose_percent = translate(difference, 1, max_diff, 1, 40)
+            loser.produce()
+            winner.produce()
+            winner.win += 1
+            loser.lose += 1
+            lost_soldier = winner.swordsman * lose_percent / 100
+            winner.swordsman -= lost_soldier
+            loser.swordsman = 0
+
+            earned_gold = loser.gold * 40 / 100
+            winner.gold += earned_gold
+            loser.gold -= earned_gold
+
+            earned_meat = loser.meat * 70 / 100
+            winner.meat += earned_meat
+            loser.meat = earned_meat
+            db.session.commit()
+            highscore_table = get_highscore_table()
+
+            return render_template("match_result.html.j2", winner=winner, earned={'gold': earned_gold, 'meat': earned_meat},
+                                   lost=lost_soldier, loser=loser, highscore_table=highscore_table)
+        else:
+            flash("You should have some soldiers to fight", "warning")
+            return redirect(url_for('u', username=current_user.username))
+    else:
+        flash_errors(form)
+        return redirect(url_for('u', username=current_user.username))
 
 
 @app.route("/logout")
@@ -186,7 +217,7 @@ def logout():
 
 
 def get_opponent():
-    return User.query.order_by(db.func.random()).first()
+    return User.query.filter(User.id != current_user.id).order_by(db.func.random()).first()
 
 
 @app.route("/dbc")
@@ -198,10 +229,35 @@ def createdb():
 
 
 def get_highscore_table():
-    return db.session.query(User, (User.win_rate * func.sum(Building.level) /
+    highscores = db.session.query(User, (User.win / User.lose * func.sum(Building.level) /
                                    func.count(Building.id) * (User.swordsman + 1)).label("score")). \
-                                    filter(User.id == Building.user_id).group_by(User.id). \
-                                    order_by(desc("score")).all()
+        filter(User.id == Building.user_id).group_by(User.id). \
+        order_by(desc("score")).all()
+    highscore_table = []
+    top10_count = 10
+    rank = 0
+    for user, score in highscores:
+        if top10_count > 0:
+            highscore_table.append((rank, user.username, score))
+        else:
+            if user == current_user:
+                highscore_table.append((rank, current_user.username, score))
+        rank += 1
+        top10_count -= 1
+
+    return highscore_table
+
+
+def translate(value, left_min, left_max, right_min, right_max):
+    # Figure out how 'wide' each range is
+    left_span = left_max - left_min
+    right_span = right_max - right_min
+
+    # Convert the left range into a 0-1 range (float)
+    value_scaled = float(value - left_min) / float(left_span)
+
+    # Convert the 0-1 range into a value in the right range.
+    return right_min + (value_scaled * right_span)
 
 
 @app.route("/dumdum")

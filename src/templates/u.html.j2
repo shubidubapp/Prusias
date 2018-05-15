@@ -1,7 +1,7 @@
 {% extends "base.html.j2" %}
 {% import "messageflash.html.j2" as messageflash %}
 
-{% block styles%}
+{% block styles %}
     {{ super() }}
     <link rel="stylesheet" href="{{ url_for('static', filename='css/u.css') }}">
 {% endblock %}
@@ -21,7 +21,7 @@
     <div class="row">
       <div class="col-md-4 offset-md-4 text-center">
         <div style="padding-top: 5px;" class="button">
-          <button class="match_button" type="button" name="match">Match!</button>
+          <a class="match_button" type="button" href="{{ url_for("get_match") }}" name="match">Match!</a>
         </div>
       </div>
     </div>
@@ -110,9 +110,6 @@
         $(document).ready(main);
 
         function main() {
-            $('.humanize').each(function () {
-                $(this).html(humanFormat(parseInt($(this).html())))
-            });
             update_produce();
             var updater = setInterval(update_produce, 1000 * interval);
 
@@ -150,8 +147,7 @@
                     if (amount_gold < amount_meat) {
                         count.attr('placeholder', Math.floor(amount_gold))
                     }
-                    else
-                    {
+                    else {
                         count.attr('placeholder', Math.floor(amount_meat))
                     }
                 })

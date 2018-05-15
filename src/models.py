@@ -14,7 +14,8 @@ class User(db.Model):
     meat = db.Column(db.Float, nullable=False, default=100)
     swordsman = db.Column(db.Integer, nullable=False, default=0)
     last_produce = db.Column(db.Float, default=None)
-    win_rate = db.Column(db.Float, nullable=False, default=1)
+    win = db.Column(db.Integer, nullable=False, default=1)
+    lose = db.Column(db.Integer, nullable=False, default=1)
 
     def set_time(self):
         self.last_produce = time()
@@ -38,7 +39,7 @@ class User(db.Model):
         return self.id
 
     def score(self):
-        return self.win_rate * sum([building.level for building in self.buildings]) / len(self.buildings) * (self.swordsman + 1)
+        return self.win/self.lose * sum([building.level for building in self.buildings]) / len(self.buildings) * (self.swordsman + 1)
 
     def __str__(self):
         return self.username

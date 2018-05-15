@@ -9,7 +9,7 @@
                 <span>
                     <p {% if user == current_user.username %}
                         class="active"
-                    {% endif %} style="color: {{ loop.cycle("red", "blue") }}">{{ rank }}. <b>{{ user }}: {{ score | round(precision=1) }}</b></p>
+                    {% endif %} style="color:white; background-color: {{ loop.cycle("red", "blue") }};">{{ rank }}. <b>{{ user }}: <span class="humanize">{{ score | round(precision=1) }}</span></b></p>
                 </span>
 
             {% endfor %}
@@ -29,13 +29,13 @@
             </div>
             <div class="row">
                 <div style="text-align: center;" class="col-md-2">
-                    <form action="{{ url_for("post_match", username=current_user.username) }}" method="post">
+                    <form action="{{ url_for("post_match") }}" method="post">
 
                         {{ form.csrf_token }}
                         {{ form.opponent_id }}
                         <button class="btn btn-sm  btn-success btn-block" type="submit">Fight</button>
                     </form>
-                    <button style="margin-top: 5px;" class="btn btn-sm btn-success btn-block" href="{{ url_for("get_match", username=current_user.username) }}">Reroll</button>
+                    <a style="margin-top: 5px;" class="btn btn-sm btn-success btn-block" href="{{ url_for("get_match") }}">Reroll</a>
                 </div>
             </div>
         </div>

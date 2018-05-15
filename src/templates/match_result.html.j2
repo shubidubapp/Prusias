@@ -1,0 +1,36 @@
+{% extends "base.html.j2" %}
+
+
+{% block content %}
+    <div style="padding-top: 50px;" class="row">
+
+        <div class="col-md-2">
+            {% for rank, user, score in highscore_table %}
+                <span>
+                    <p {% if user == current_user.username %}
+                        class="active"
+                    {% endif %} style="color:white; background-color: {{ loop.cycle("red", "blue") }};">{{ rank }}. <b>{{ user }}: <span class="humanize">{{ score | round(precision=1) }}</span></b></p>
+                </span>
+
+            {% endfor %}
+        </div>
+
+        <div class="col-md-8">
+            {% if winner.username == current_user.username %}
+                <p>You won!</p>
+                <p>You have earned: <span class="humanize">{{ earned['gold'] }}</span> Gold and <span class="humanize">{{ earned['meat'] }}</span> Meat </p>
+                <p>At the end of the battle you have lost <span class="humanize">{{ lost }}</span> swordsman. You now have <span class="humanize">{{ current_user.swordsman }}</span> swordsman</p>
+                <p>Your new score is: {{ current_user.score() | round(precision=1) }}</p>
+            {% else %}
+                <p>You lost!</p>
+                <p>You have lost: <span class="humanize">{{ earned['gold'] }}</span> Gold and <span class="humanize">{{ earned['meat'] }}</span> Meat to the enemy </p>
+                <p>At the end of the battle you have lost all of your swordsman. You now have <span class="humanize">{{ current_user.swordsman }}</span> swordsman</p>
+                <p>Your new score is: <span class="humanize">{{ current_user.score() | round(precision=1) }}</span></p>
+            {% endif %}
+            <a style="margin-top: 5px;" class="btn btn-sm btn-success btn-block" href="{{ url_for("get_match", username=current_user.username) }}">New Match!</a>
+        </div>
+
+    </div>
+
+
+{% endblock %}

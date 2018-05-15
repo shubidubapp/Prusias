@@ -1,63 +1,72 @@
 {% extends "base.html.j2" %}
 {% import "messageflash.html.j2" as messageflash %}
 
+{% block styles%}
+    {{ super() }}
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/u.css') }}">
+{% endblock %}
+
 {% block content %}
-    <div class="container" style="padding-top:70px">
-        {{ messageflash.flash() }}
-        User: {{ current_user.username }}
-        Gold: <span id='gold' class="humanize"> {{ current_user.gold | int }} </span>
-        Meat: <span id='meat' class="humanize"> {{ current_user.meat | int }} </span>
-        <ul style="list-style-type : none; padding: 0; margin: 0;">
-            {% for building, building_form in resource_buildings %}
-                <div class="row filter">
-                    <li style="background: url('{{ building.icon }}') no-repeat left top; height: 108px; padding-left: 64px; padding-top:5px;">{{ building.building_type | capitalize }}
-                        Building,
-                        Level: {{ building.level }},
-                        Upgrade:
-                        Gold: <span class='building_gold humanize'>{{ building.upgrade_gold() }}</span>
-                        Meat: <span class='building_meat humanize'>{{ building.upgrade_meat() }}</span>
-                        Production: <span
-                                class='production_{{ building.building_type }} humanize'>{{ building.get_production_speed() }}</span>/s
-                        <form style="padding-left: 10px;" method="post" action="{{ url_for('upgrade_building') }}">
-                            {{ building_form.id }}
-                            {{ building_form.csrf_token }}
-                            <input type="submit" value="Upgrade!">
-                        </form>
-                    </li>
-                </div>
-            {% endfor %}
-            {% for building, building_form, soldier_form in soldier_buildings %}
-                <div class="row filter">
-                    <li style="background: url('{{ building.icon }}') no-repeat left top; height: 108px; padding-left: 64px; padding-top:5px;">{{ building.building_type | capitalize }}
-                        Building,
-                        Level: {{ building.level }},
-                        Upgrade:
-                        Gold: <span class='building_gold humanize'>{{ building.upgrade_gold() }}</span>
-                        Meat: <span class='building_meat humanize'>{{ building.upgrade_meat() }}</span>
-                        {{ building.building_type | capitalize }} Count: <span
-                                class='count{{ building.building_type }} humanize'>{{ building.count() }}</span>
-                        <form style="padding-left: 10px;" method="post" action="{{ url_for('upgrade_building') }}">
-                            {{ building_form.id }}
-                            {{ building_form.csrf_token }}
-                            <input type="submit" value="Upgrade!">
-                        </form>
-                        {% if building.level > 0 %}
-                            <form style="padding-left: 10px;" method="post" class="soldier_form"
-                                  action="{{ url_for('produce_soldier') }}">
-                                Gold Per Unit: <span class='soldier_gold'>{{ building.gold_cost() }}</span>,
-                                Meat Per Unit: <span class='soldier_meat'>{{ building.meat_cost() }}</span>
-                                {{ soldier_form.csrf_token }}
-                                {{ soldier_form.id }}
-                                <label for="inputCount" class="sr-only">Count:</label>
-                                {{ soldier_form.count(class_="form_count", placeholder="0") }}
-                                <input type="submit" value="Train!">
-                            </form>
-                        {% endif %}
-                    </li>
-                </div>
-            {% endfor %}
-        </ul>
+  <div class="container" style="padding-top:70px">
+    {{ messageflash.flash(id=1) }}
+    <div class="total_source" >
+      User: {{ current_user.username }}
+      Gold: <span id='gold' class="humanize"> {{ current_user.gold | int }} </span>
+      Meat: <span id='meat' class="humanize"> {{ current_user.meat | int }} </span>
     </div>
+    <ul style="list-style-type : none; padding: 0; margin: 0;">
+      {% for building, building_form in resource_buildings %}
+      <div class="row filter">
+          <li class="button_{{ building.building_type }}">{{ building.building_type | capitalize }}
+          Building, <br>
+          Level: {{ building.level }},<br>
+          Upgrade:
+          Gold: <span class='building_gold humanize'>{{ building.upgrade_gold() }}</span>,
+          Meat: <span class='building_meat humanize'>{{ building.upgrade_meat() }}</span><br>
+          Production: <span
+          class='production_{{ building.building_type }} humanize'>{{ building.get_production_speed() }}</span>/s<br>
+
+          <form style="padding-left: 10px;" method="post" action="{{ url_for('upgrade_building') }}">
+            {{ building_form.id }}
+            {{ building_form.csrf_token }}
+            <input type="submit" value="Upgrade!">
+          </form>
+        </li>
+      </div>
+      {% endfor %}
+      {% for building, building_form, soldier_form in soldier_buildings %}
+      <div class="row filter">
+        <li class="button_{{ building.building_type }}">{{ building.building_type | capitalize }}
+          Building,<br>
+          Level: {{ building.level }},<br>
+          Upgrade:
+          Gold: <span class='building_gold humanize'>{{ building.upgrade_gold() }}</span>
+          Meat: <span class='building_meat humanize'>{{ building.upgrade_meat() }}</span><br>
+          {{ building.building_type | capitalize }} Count: <span
+          class='count{{ building.building_type }} humanize'>{{ building.count() }}</span>
+          <form style="padding-left: 10px;" method="post" action="{{ url_for('upgrade_building') }}">
+            {{ building_form.id }}
+            {{ building_form.csrf_token }}
+            <input type="submit" value="Upgrade!">
+          </form><br>
+          {% if building.level > 0 %}
+          <form style="margin-top: -20px;"method="post" class="soldier_form"
+          action="{{ url_for('produce_soldier') }}">
+          Gold Per Unit: <span class='soldier_gold'>{{ building.gold_cost() }}</span>,
+          Meat Per Unit: <span class='soldier_meat'>{{ building.meat_cost() }}</span>
+          {{ soldier_form.csrf_token }}
+          {{ soldier_form.id }}
+          <label for="inputCount" class="sr-only">Count:</label>
+          {{ soldier_form.count(class_="form_count", placeholder="0") }}
+          <input type="submit" value="Train!">
+        </form>
+        {% endif %}
+      </li>
+    </div>
+    {% endfor %}
+  </ul>
+</div>
+
 {% endblock %}
 
 {% block scripts %}

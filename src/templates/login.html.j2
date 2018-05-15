@@ -9,7 +9,7 @@
 {% block content %}
 <form class="form-signin" method="post" action="{{url_for('login_post')}}">
   <h1 class="h3 mb-3 font-weight-normal text-center">Login</h1>
-  {{messageflash.flash()}}
+  {{messageflash.flash(id=0)}}
 
    {{ form.csrf_token }}
    <label for="inputUsername" class="sr-only">Username</label>

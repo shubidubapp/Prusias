@@ -1,0 +1,33 @@
+body{
+  background-image: url("/static/img/towntemplate.png");
+  background-repeat: no-repeat;
+  background-attachment: fixed;
+  background-position: center;
+  background-size: cover;
+}
+
+.total_source{
+  background-color: #4d88ff;
+  border: 2px solid #4d88ff;
+  border-radius: 6px;
+  margin-top: 5%;
+  margin-left: 20%;
+  position: fixed;
+}
+.button_meat{
+  margin-left: 14%;
+  margin-top: 25%;
+  position: fixed;
+}
+
+.button_gold{
+  margin-top: 38%;
+  margin-left: -10%;
+  position: fixed;
+}
+
+.button_swordsman{
+  margin-left: 55%;
+  margin-top: 35.5%;
+  position: fixed;
+}

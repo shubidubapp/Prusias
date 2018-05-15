@@ -1,9 +1,16 @@
-{% macro flash() -%}
+{% macro flash(id=0) -%}
 {% with messages = get_flashed_messages(with_categories=true) %}
-{% if messages %}
+{% if messages and id==0 %}
   {% for category, message in messages %}
   <div class="alert alert-{{ category }}">
-    <span style="font-size:14px;">{{ message }}</span>
+    <span style="font-size:14px; ">{{ message }}</span>
+</div>
+  {% endfor %}
+{% endif %}
+{% if messages and id==1 %}
+  {% for category, message in messages %}
+  <div style="position: fixed; margin-left: 25%;" class="alert alert-{{ category }}">
+    <span style="font-size:14px; ">{{ message }}</span>
 </div>
   {% endfor %}
 {% endif %}

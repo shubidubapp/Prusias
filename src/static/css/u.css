@@ -1,18 +1,17 @@
 body{
   background-image: url("/static/img/towntemplate.png");
   background-repeat: no-repeat;
-  background-attachment: fixed;
+  /* background-attachment: fixed; */
   background-position: center;
   background-size: cover;
+
 }
 
 .total_source{
   background-color: #4d88ff;
   border: 2px solid #4d88ff;
   border-radius: 6px;
-  margin-top: 5%;
-  margin-left: 20%;
-  position: fixed;
+  /* position: fixed; */
 }
 
 .match_button{
@@ -21,25 +20,19 @@ body{
   font-size: 18px;
   border: 2px solid #dc0c4c;
   border-radius: 6px;
-  margin-top: 8%;
-  margin-left: 27%;
-  position: fixed;
+  /* position: fixed; */
 }
 
-.button_meat{
-  margin-left: 14%;
-  margin-top: 25%;
-  position: fixed;
+.flash_message {
+	/* fixed position a zero-height full width container */
+	/* position: fixed; */
+	/* center all inline content */
+	text-align: center;
 }
 
-.button_gold{
-  margin-top: 38%;
-  margin-left: -10%;
-  position: fixed;
-}
-
-.button_swordsman{
-  margin-left: 55%;
-  margin-top: 35.5%;
-  position: fixed;
+.flash_message > div {
+	/* make the block inline */
+	display: inline-block;
+	/* reset container's center alignment */
+	text-align: left;
 }

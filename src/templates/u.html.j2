@@ -7,40 +7,71 @@
 {% endblock %}
 
 {% block content %}
-  <div class="container" style="padding-top:70px">
-    {{ messageflash.flash(id=1) }}
-    <div class="total_source" >
-      User: {{ current_user.username }}
-      Gold: <span id='gold' class="humanize"> {{ current_user.gold | int }} </span>
-      Meat: <span id='meat' class="humanize"> {{ current_user.meat | int }} </span>
-    </div>
-    <div class="button">
-      <button class="match_button" type="button" name="match">Match!</button>
-    </div>
-    <ul style="list-style-type : none; padding: 0; margin: 0;">
-      {% for building, building_form in resource_buildings %}
-      <div class="row filter">
-          <li class="button_{{ building.building_type }}">{{ building.building_type | capitalize }}
-          Building, <br>
-          Level: {{ building.level }},<br>
-          Upgrade:
-          Gold: <span class='building_gold humanize'>{{ building.upgrade_gold() }}</span>,
-          Meat: <span class='building_meat humanize'>{{ building.upgrade_meat() }}</span><br>
-          Production: <span
-          class='production_{{ building.building_type }} humanize'>{{ building.get_production_speed() }}</span>/s<br>
 
-          <form style="padding-left: 10px;" method="post" action="{{ url_for('upgrade_building') }}">
-            {{ building_form.id }}
-            {{ building_form.csrf_token }}
-            <input type="submit" value="Upgrade!">
-          </form>
-        </li>
+  <div class="container" style="padding-top:70px ; max-width: inherit;">
+    <div class="row">
+      <div class="col-md-4 offset-md-4 text-center">
+        <div class="total_source">
+          User: {{ current_user.username }}
+          Gold: <span id='gold' class="humanize"> {{ current_user.gold | int }} </span>
+          Meat: <span id='meat' class="humanize"> {{ current_user.meat | int }} </span>
+        </div>
       </div>
+    </div>
+    <div class="row">
+      <div class="col-md-4 offset-md-4 text-center">
+        <div style="padding-top: 5px;" class="button">
+          <button class="match_button" type="button" name="match">Match!</button>
+        </div>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-md-4 offset-md-4 flash_message">
+          {{ messageflash.flash(id=1) }}
+      </div>
+    </div>
+    <div class="row" style="padding-top:10%; padding-left:15%;">
+      {% for building, building_form in resource_buildings %}
+          {% if building.building_type == 'gold' %}
+          <div class="button_{{ building.building_type }} col-xs-6 col-md-4" >
+              <img src="/static/img/goldminefinal1.png" alt="goldmine"><br>
+              {{ building.building_type | capitalize }} Building, <br>
+              Level: {{ building.level }},<br>
+              Upgrade:
+              Gold: <span class='building_gold humanize'>{{ building.upgrade_gold() }}</span>,
+              Meat: <span class='building_meat humanize'>{{ building.upgrade_meat() }}</span><br>
+              Production: <span
+              class='production_{{ building.building_type }} humanize'>{{ building.get_production_speed() }}</span>/s<br>
+              <form style="padding-left: 10px;" method="post" action="{{ url_for('upgrade_building') }}">
+                {{ building_form.id }}
+                {{ building_form.csrf_token }}
+                <input type="submit" value="Upgrade!">
+              </form>
+          </div>
+          {% endif %}
+          {% if building.building_type == 'meat' %}
+          <div class="button_{{ building.building_type }} col-xs-6 col-md-4">
+            <img style="padding-top:10%;" src="/static/img/barnyardfinal.png" alt="goldmine"><br>
+            {{ building.building_type | capitalize }} Building, <br>
+            Level: {{ building.level }},<br>
+            Upgrade:
+            Gold: <span class='building_gold humanize'>{{ building.upgrade_gold() }}</span>,
+            Meat: <span class='building_meat humanize'>{{ building.upgrade_meat() }}</span><br>
+            Production: <span
+            class='production_{{ building.building_type }} humanize'>{{ building.get_production_speed() }}</span>/s<br>
+            <form style="padding-left: 10px;" method="post" action="{{ url_for('upgrade_building') }}">
+              {{ building_form.id }}
+              {{ building_form.csrf_token }}
+              <input type="submit" value="Upgrade!">
+            </form>
+          </div>
+          {% endif %}
       {% endfor %}
       {% for building, building_form, soldier_form in soldier_buildings %}
-      <div class="row filter">
-        <li class="button_{{ building.building_type }}">{{ building.building_type | capitalize }}
-          Building,<br>
+      {% if building.building_type == 'swordsman' %}
+        <div class="button_{{ building.building_type }} col-xs-6 col-md-4">
+          <img src="/static/img/armytowerfinal.png" alt="swordsman"><br>
+          {{ building.building_type | capitalize }} Building,<br>
           Level: {{ building.level }},<br>
           Upgrade:
           Gold: <span class='building_gold humanize'>{{ building.upgrade_gold() }}</span>
@@ -64,11 +95,11 @@
           <input type="submit" value="Train!">
         </form>
         {% endif %}
-      </li>
+      </div>
+      {% endif %}
     </div>
     {% endfor %}
-  </ul>
-</div>
+  </div>
 
 {% endblock %}
 

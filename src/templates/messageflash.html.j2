@@ -9,8 +9,8 @@
 {% endif %}
 {% if messages and id==1 %}
   {% for category, message in messages %}
-  <div style="position: fixed; margin-left: 25%;" class="alert alert-{{ category }}">
-    <span style="font-size:14px; ">{{ message }}</span>
+  <div style="margin-top: 5px; " class="alert alert-{{ category }}">
+    <span style="font-size:14px;">{{ message }}</span>
 </div>
   {% endfor %}
 {% endif %}

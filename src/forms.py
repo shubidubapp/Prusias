@@ -19,9 +19,13 @@ class LoginForm(FlaskForm):
 
 
 class BuildingForm(FlaskForm):
-    id = HiddenField("Id")
+    id = HiddenField("Id", validators=[InputRequired()])
 
 
 class SoldierBuildingForm(FlaskForm):
     id = HiddenField("Id")
     count = IntegerField("Count", validators=[InputRequired("You can't produce 0(zero) soldiers!")])
+
+
+class MatchForm(FlaskForm):
+    opponent_id = HiddenField("Id", validators=[InputRequired()])

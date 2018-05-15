@@ -1,5 +1,6 @@
 from src import db
 from time import time
+from sqlalchemy.ext.hybrid import hybrid_property
 
 
 class User(db.Model):
@@ -13,6 +14,7 @@ class User(db.Model):
     meat = db.Column(db.Float, nullable=False, default=100)
     swordsman = db.Column(db.Integer, nullable=False, default=0)
     last_produce = db.Column(db.Float, default=None)
+    win_rate = db.Column(db.Float, nullable=False, default=1)
 
     def set_time(self):
         self.last_produce = time()
@@ -35,14 +37,17 @@ class User(db.Model):
     def get_id(self):
         return self.id
 
+    def score(self):
+        return self.win_rate * sum([building.level for building in self.buildings]) / len(self.buildings) * (self.swordsman + 1)
+
     def __str__(self):
         return self.username
 
 
 class Building(db.Model):
     __tablename__ = "Building"
-    base_upgrade_gold = 50
-    base_upgrade_meat = 25
+    base_upgrade_gold = 5
+    base_upgrade_meat = 2
     id = db.Column(db.Integer, primary_key=True)
     level = db.Column(db.Integer, nullable=False, default=0)
     building_type = db.Column(db.Text, nullable=False)
@@ -51,10 +56,10 @@ class Building(db.Model):
     __mapper_args__ = {'polymorphic_on': building_type, 'polymorphic_identity': 'Building'}
 
     def upgrade_gold(self):
-        return self.base_upgrade_gold*(10**self.level)
+        return self.base_upgrade_gold * (3 ** self.level)
 
     def upgrade_meat(self):
-        return self.base_upgrade_meat*(10**self.level)
+        return self.base_upgrade_meat * (3 ** self.level)
 
     def upgrade(self):
         upgrade_gold = self.upgrade_gold()
@@ -70,28 +75,38 @@ class Building(db.Model):
 
 class ResourceBuilding(Building):
 
+    def resource(self): pass
+
     def get_production_speed(self):
-        return self.base_production_speed ** self.level
+        return self.base_production_speed ** self.level * ((self.level / 10) + 2)
 
     def produce(self): pass
 
 
 class GoldBuilding(ResourceBuilding):
     __mapper_args__ = {'polymorphic_identity': 'gold'}
-    base_production_speed = 4
+    base_production_speed = 1.4
     icon = '/static/img/goldmine.png'
 
+    @hybrid_property
+    def resource(self):
+        return self.user.gold
+
     def produce(self):
-        self.user.gold += self.get_production_speed()*(time() - self.user.last_produce)
+        self.user.gold += self.get_production_speed() * (time() - self.user.last_produce)
 
 
 class MeatBuilding(ResourceBuilding):
     __mapper_args__ = {'polymorphic_identity': 'meat'}
-    base_production_speed = 5
+    base_production_speed = 1.5
     icon = '/static/img/barnyard.png'
 
+    @hybrid_property
+    def resource(self):
+        return self.user.meat
+
     def produce(self):
-        self.user.meat += self.get_production_speed()*(time() - self.user.last_produce)
+        self.user.meat += self.get_production_speed() * (time() - self.user.last_produce)
 
 
 class SoldierBuilding(Building):
@@ -102,10 +117,10 @@ class SoldierBuilding(Building):
 
 class SwordsmanBuilding(SoldierBuilding):
     __mapper_args__ = {'polymorphic_identity': 'swordsman'}
-    base_gold_cost = 200
-    base_meat_cost = 300
-    base_upgrade_gold = 150
-    base_upgrade_meat = 125
+    base_gold_cost = 20
+    base_meat_cost = 30
+    base_upgrade_gold = 15
+    base_upgrade_meat = 12
     cost_reducement_multiplier = 1.2
 
     def meat_cost(self):
@@ -115,9 +130,9 @@ class SwordsmanBuilding(SoldierBuilding):
         return int(self.base_gold_cost / (self.cost_reducement_multiplier ** self.level))
 
     def produce(self, count):
-        required_gold = self.gold_cost()*count
-        required_meat = self.meat_cost()*count
-        if (self.user.gold >= self.gold_cost()*count) and (self.user.meat >= self.meat_cost()*count):
+        required_gold = self.gold_cost() * count
+        required_meat = self.meat_cost() * count
+        if (self.user.gold >= self.gold_cost() * count) and (self.user.meat >= self.meat_cost() * count):
             self.user.swordsman += count
             self.user.gold -= required_gold
             self.user.meat -= required_meat

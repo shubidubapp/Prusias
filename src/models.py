@@ -87,7 +87,6 @@ class ResourceBuilding(Building):
 class GoldBuilding(ResourceBuilding):
     __mapper_args__ = {'polymorphic_identity': 'gold'}
     base_production_speed = 1.4
-    icon = '/static/img/goldmine.png'
 
     @hybrid_property
     def resource(self):
@@ -100,7 +99,6 @@ class GoldBuilding(ResourceBuilding):
 class MeatBuilding(ResourceBuilding):
     __mapper_args__ = {'polymorphic_identity': 'meat'}
     base_production_speed = 1.5
-    icon = '/static/img/barnyard.png'
 
     @hybrid_property
     def resource(self):
@@ -111,7 +109,6 @@ class MeatBuilding(ResourceBuilding):
 
 
 class SoldierBuilding(Building):
-    icon = '/static/img/armytower.png'
 
     def produce(self, count): pass
 

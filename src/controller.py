@@ -1,16 +1,27 @@
 from src import app, db, login_manager
-from flask import render_template, redirect, url_for, request, flash, abort
+from flask import render_template, redirect, url_for, request, flash, abort, session
 from flask_login import login_user, current_user, login_required, logout_user
 from .forms import RegisterForm, LoginForm, BuildingForm, SoldierBuildingForm, MatchForm
 from .models import User, Building, GoldBuilding, MeatBuilding, SwordsmanBuilding, ResourceBuilding
 from werkzeug.security import generate_password_hash, check_password_hash
 import random
-from sqlalchemy.sql import func, desc
 
 
 @login_manager.user_loader
 def load_user(user_id):
     return User.query.filter_by(id=user_id).first()
+
+
+@login_manager.unauthorized_handler
+def private():
+    flash("You don't have permission to see this page", 'warning')
+    return redirect(url_for('index'))
+
+
+@app.errorhandler(404)
+def page_not_found(e):
+    flash("404 Not Found!", 'danger')
+    return redirect(url_for('index'))
 
 
 def flash_errors(form):
@@ -87,6 +98,7 @@ def register_post():
 
 
 @app.route("/upgradeBuilding", methods=['POST'])
+@login_required
 def upgrade_building():
     form = BuildingForm(request.form)
     building = Building.query.filter_by(user=current_user, id=form.id.data).first()
@@ -104,6 +116,7 @@ def upgrade_building():
 
 
 @app.route("/produceSoldier", methods=['POST'])
+@login_required
 def produce_soldier():
     form = SoldierBuildingForm(request.form)
     building = Building.query.filter_by(user=current_user, id=form.id.data).first()
@@ -124,8 +137,8 @@ def produce_soldier():
     return redirect(url_for('u', username=current_user.username))
 
 
-@login_required
 @app.route("/u/<username>")
+@login_required
 def u(username):
     if current_user.username == username:
         current_user.produce()
@@ -142,13 +155,14 @@ def u(username):
     else:
         searched_user = User.query.filter_by(username=username).first()
         if searched_user is not None:
-            return "Private!"
+            flash("You don't have permission to see this page", 'warning')
+            return redirect(url_for('index'))
         else:
             abort(404)
 
 
-@login_required
 @app.route("/match", methods=['GET'])
+@login_required
 def get_match():
     if current_user.swordsman > 0:
         random_user = get_opponent()
@@ -160,8 +174,8 @@ def get_match():
         return redirect(url_for('u', username=current_user.username))
 
 
-@login_required
 @app.route("/match", methods=['POST'])
+@login_required
 def post_match():
     form = MatchForm(request.form)
     if form.validate():
@@ -169,8 +183,6 @@ def post_match():
             opponent_user = User.query.filter_by(id=form.opponent_id.data).first()
             weight_0 = current_user.swordsman + 1 / (current_user.swordsman + opponent_user.swordsman + 1)
             weight_1 = opponent_user.swordsman + 1 / (current_user.swordsman + opponent_user.swordsman + 1)
-            print(weight_0)
-            print(weight_1)
             winner_r = random.choices([0, 1], weights=[weight_0, weight_1])[0]
             if winner_r == 0:
                 winner = current_user
@@ -229,10 +241,9 @@ def createdb():
 
 
 def get_highscore_table():
-    highscores = db.session.query(User, (User.win / User.lose * func.sum(Building.level) /
-                                   func.count(Building.id) * (User.swordsman + 1)).label("score")). \
-        filter(User.id == Building.user_id).group_by(User.id). \
-        order_by(desc("score")).all()
+    highscores = User.query.all()
+    highscores = sorted(highscores, key=lambda x: x.score(), reverse=True)
+    highscores = [(x, x.score()) for x in highscores]
     highscore_table = []
     top10_count = 10
     rank = 0
@@ -259,18 +270,3 @@ def translate(value, left_min, left_max, right_min, right_max):
     # Convert the 0-1 range into a value in the right range.
     return right_min + (value_scaled * right_span)
 
-
-@app.route("/dumdum")
-def add_dummy_users():
-    for i in range(16):
-        user = User()
-        user.username = "dummy_{}".format(i)
-        user.password = generate_password_hash("1")
-        user.email = "dummy_{}@dummy.com".format(i)
-        db.session.add(user)
-        user.buildings.append(MeatBuilding(level=i))
-        user.buildings.append(GoldBuilding(level=i))
-        user.buildings.append(SwordsmanBuilding(level=i))
-        user.set_time()
-    db.session.commit()
-    return redirect(url_for('index'))

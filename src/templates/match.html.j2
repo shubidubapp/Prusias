@@ -7,47 +7,52 @@
 
 
 {% block content %}
-
-    <div class="row">
-        <div class="col-md-8 offset-md-2">
-            <div style="text-align: center; font-weight:bold;" class="row warrior_border">
-                <div  class="col-md-6">
-                    <p id="username">{{ current_user.username }}</p>
-                    <img class="img-fluid" src="/static/img/soldier1.png" alt="soldier1">
-                    <p id="score">Score: <span class="humanize">{{ current_user.score() }}</span> </p>
-                </div>
-                <div  class="col-md-6">
-                    <p id="enemy-username">{{ opponent_user.username }}</p>
-                    <img class="img-fluid" src="/static/img/soldier2.png" alt="soldier2">
-                    <p id="enemy-score">Score: <span class="humanize">{{ opponent_user.score() }}</span> </p>
-                </div>
-            </div>
-            <div style="text-align: center;" class="row options_row">
-                <div class="col-md-6">
-                    <form action="{{ url_for("post_match") }}" method="post">
-                        {{ form.csrf_token }}
-                        {{ form.opponent_id }}
-                        <button class="btn btn-sm btn-success option_buttons" type="submit">Fight</button>
-                    </form>
-                </div>
-                <div class="col-md-6">
-                  <a class="btn btn-sm btn-success option_buttons" href="{{ url_for("get_match") }}">Reroll</a>
-                </div>
-            </div>
-            <div style="text-align: center;">
-              <p style="font-weight:bold; font-size:20px;">LEADERBOARD</p>
-                <div class="leaderboard">
-                {% for rank, user, score in highscore_table %}
-                <span>
+    <div class="container">
+        <div class="row">
+            <div class="col-md-3">
+                <div style="text-align: center; padding-top: 5%">
+                    <h3 style="font-weight:bold; text-align: center">LEADERBOARD</h3>
+                    <div class="leaderboard">
+                        {% for rank, user, score in highscore_table %}
+                            <span>
                   <p {% if user == current_user.username %}
-                  class="active"
-                  {% endif %} style="color:white; background-color: {{ loop.cycle("#dc0c4c", "#afc307") }};">{{ rank }}. <b>{{ user }}: <span class="humanize">{{ score | round(precision=1) }}</span></b></p>
+                      class="active"
+                  {% endif %} style="color:white; background-color: {{ loop.cycle("#dc0c4c", "#afc307") }};">{{ rank }}. <b>{{ user }}: <span
+                          class="humanize">{{ score | round(precision=1) }}</span></b></p>
                 </span>
-                {% endfor %}
-              </div>
+                        {% endfor %}
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-8 offset-md-1">
+                <div style="text-align: center; font-weight:bold;" class="row warrior_border">
+                    <div class="col-md-6">
+                        <p id="username">{{ current_user.username }}</p>
+                        <img class="img-fluid" src="{{ url_for('static', filename='img/soldier1.png') }}"
+                             alt="soldier1">
+                        <p id="score">Score: <span class="humanize">{{ current_user.score() }}</span></p>
+                    </div>
+                    <div class="col-md-6">
+                        <p id="enemy-username">{{ opponent_user.username }}</p>
+                        <img class="img-fluid" src="{{ url_for('static', filename='img/soldier2.png') }}"
+                             alt="soldier2">
+                        <p id="enemy-score">Score: <span class="humanize">{{ opponent_user.score() }}</span></p>
+                    </div>
+                </div>
+                <div style="text-align: center;" class="row options_row">
+                    <div class="col-md-6">
+                        <form action="{{ url_for("post_match") }}" method="post">
+                            {{ form.csrf_token }}
+                            {{ form.opponent_id }}
+                            <button class="btn btn-sm btn-success option_buttons" type="submit">Fight</button>
+                        </form>
+                    </div>
+                    <div class="col-md-6">
+                        <a class="btn btn-sm btn-success option_buttons" href="{{ url_for("get_match") }}">Reroll</a>
+                    </div>
+                </div>
             </div>
         </div>
     </div>
-
 
 {% endblock %}

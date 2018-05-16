@@ -1,29 +1,27 @@
-nav{
+nav {
     background-color: #dc0c4c;
     overflow: hidden;
     width: 100%;
 }
 
-.logregbutton, .logregbutton:hover{
-  color: #afc307;
-  font-size: 18px;
-  font-weight: bold;
-  margin-left: 70&;
-  padding-right: 20px;
+.logregbutton, .logregbutton:hover {
+    color: #afc307;
+    font-size: 18px;
+    font-weight: bold;
 }
 
-.backimage{
-  margin-top: 15%;
-  margin-left: 15%;
-  height: 90%;
+.backimage {
+    margin: 10% 0 auto auto;
+    padding-top: 5%;
+    max-height: 100%;
 }
 
-.slogan{
-  margin-top: 50%;
-  padding-right: 20%;
-  font-size: 30px;
-  font-family: Audiowide;
-  text-align: center;
-  text-transform:uppercase;
-  color: #dc0c4c;
+.slogan {
+    margin-top: auto;
+    padding-top: 5%;
+    margin-bottom: auto;
+    font-size: 30px;
+    text-align: center;
+    text-transform: uppercase;
+    color: #dc0c4c;
 }

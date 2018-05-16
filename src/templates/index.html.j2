@@ -1,13 +1,18 @@
 {% extends "base.html.j2" %}
+{% import "messageflash.html.j2" as messageflash %}
 
 {% block content %}
-<div class="row">
-  <div class="col-md-7">
-    <img class="backimage" src="static/img/finback.png" alt="finback">
-  </div>
-  <div class="col-md-5">
-    <p class="slogan">Build the most epic medieval village to become strongest among all</p>
-  </div>
+    <div class="container">
+        <div style="padding-top: 5px">{{ messageflash.flash() }}</div>
 
-</div>
+        <div class="row" style="padding-top: 2%">
+            <div class="col-md-6 backimage">
+                <img class="img-fluid" src="{{ url_for('static', filename='img/poster.png') }}" alt="finback">
+            </div>
+            <div class="col-md-6 slogan">
+                <p>Build the most epic medieval village to become strongest among all</p>
+            </div>
+
+        </div>
+    </div>
 {% endblock %}

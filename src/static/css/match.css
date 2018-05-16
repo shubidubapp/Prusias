@@ -1,28 +1,55 @@
-.warrior_border{
-  padding-top: 5%;
-  margin-top: 5%;
-  border: 3px solid #dc0c4c;
-  border-radius: 6px;
-  font-size: 18px;
+.warrior_border {
+    /*padding-top: 5%;*/
+    margin-top: 5%;
+    margin-bottom: 5%;
+    padding-bottom: 1%;
+    border: 3px solid #dc0c4c;
+    border-radius: 6px;
+    font-size: 18px;
 }
 
-.options_row{
-  margin-top: 10px;
+.options_row {
+    margin-top: 10px;
 }
 
-.option_buttons{
-  font-size: 18px;
-  font-weight: bold;
-  background-color: #dc0c4c;
-  border-radius: 6px;
+.option_buttons {
+    font-size: 18px;
+    font-weight: bold;
+    background-color: #dc0c4c;
+    border-radius: 6px;
 }
 
-.leaderboard{
-  width: 250px;
-  margin-top: 40px;
-  margin-left: auto;
-  margin-right: auto;
-  font-size: 18px;
-  border: 3px solid #dc0c4c;
-  border-radius: 6px;
+.leaderboard {
+    padding-top: 5%;
+    margin-top: 5%;
+    /*width: 250px;*/
+    margin-left: auto;
+    margin-right: auto;
+    font-size: 18px;
+    border: 3px solid #dc0c4c;
+    border-radius: 6px;
+}
+
+.result_screen {
+    padding-top: 5%;
+    margin-top: 5%;
+    border: 3px solid #dc0c4c;
+    border-radius: 6px;
+    font-size: 18px;
+    text-align: center;
+}
+
+.result_message {
+    font-size: 18px;
+    font-weight: bold;
+    text-align: center;
+}
+
+.rematch_button {
+    font-size: 18px;
+    font-weight: bold;
+    background-color: #dc0c4c;
+    border-radius: 6px;
+    text-align: center;
+    margin-bottom: 5px;
 }

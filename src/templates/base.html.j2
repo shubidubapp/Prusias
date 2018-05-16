@@ -1,54 +1,51 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
+<head>
     <meta charset="utf-8">
     {% block styles %}
-    <link rel="stylesheet" href="http://fonts.googleapis.com/css?family=Audiowide">
-    <link rel="stylesheet" href="{{ url_for('static', filename='css/bootstrap.min.css') }}">
+        <link rel="stylesheet" href="http://fonts.googleapis.com/css?family=Audiowide">
+        <link rel="stylesheet" href="{{ url_for('static', filename='css/bootstrap.min.css') }}">
         <link rel="stylesheet" href="{{ url_for('static', filename='css/all.css') }}">
         <link rel="stylesheet" href="{{ url_for('static', filename='css/base.css') }}">
         <script src="{{ url_for('static', filename='js/jquery.min.js') }}"></script>
     {% endblock %}
-  </head>
-  <body>
+</head>
+<body>
 {% block navbar %}
-         <nav class="navbar navbar-dark fixed-top">
-        <div class="container-fluid">
-            {% if current_user.username%}
-                <div class="navbar-header">
-                  <a href="{{ url_for('index') }}"><img src="/static/img/prusiastext.png" alt="prusias-badge"></a>
-                </div>
-                <div>
-                    <a href="{{ url_for('u', username = current_user.username) }}" class="logregbutton"> {{ current_user.username }}</a>
-                    <a href="{{ url_for('logout') }}" class="button logregbutton">Logout</a>
-                </div>
-            {% else %}
-                    <div class="navbar-header">
-                      <a href="{{ url_for('index') }}"><img src="/static/img/prusiastext.png" alt="prusias-icon"></a>
-                    </div>
-                    <div>
-                      <a  class="logregbutton" href="{{ url_for('login_get') }}" class="button">Login</a>
-                      <a  class="logregbutton" href="{{ url_for('register_get') }}" class="button">Register</a>
-                    </div>
-            {% endif %}
+    <nav class="navbar navbar-light">
+{#        <div class="container">#}
+            <a href="{{ url_for('index') }}"><img src="{{ url_for('static', filename='img/prusiastext.png') }}"
+                                                  alt="prusias-icon"></a>
 
-        </div>
-     </nav>
+            <ul class="nav justify-content-center">
+                {% if current_user.is_authenticated %}
+                    <div>
+                        <a href="{{ url_for('u', username = current_user.username) }}"
+                           class="logregbutton"> {{ current_user.username }}</a>
+                        <a href="{{ url_for('logout') }}" class="button logregbutton">Logout</a>
+                    </div>
+                {% else %}
+                    <a class="p-2 logregbutton" href="{{ url_for('login_get') }}">Login</a>
+                    <a class="p-2 logregbutton" href="{{ url_for('register_get') }}">Register</a>
+                {% endif %}
+            </ul>
+{#        </div>#}
+    </nav>
 
 {% endblock %}
 
-    {% block content %}
-    {% endblock %}
-    {% block scripts %}
+{% block content %}
+{% endblock %}
+{% block scripts %}
     <script src="{{ url_for('static', filename='js/popper.min.js') }}"></script>
     <script src="{{ url_for('static', filename='js/bootstrap.min.js') }}"></script>
     <script src="{{ url_for('static', filename='js/script.js') }}"></script>
-    <script src="https://unpkg.com/human-format@0.10/index.js"></script>
+    <script src="{{ url_for('static', filename='js/humanFormat.js') }}"></script>
     <script type=text/javascript>
-      $SCRIPT_ROOT = {{ request.script_root|tojson|safe }};
+        $SCRIPT_ROOT = {{ request.script_root|tojson|safe }};
     </script>
 
-    {% endblock %}
+{% endblock %}
 
-  </body>
+</body>
 </html>

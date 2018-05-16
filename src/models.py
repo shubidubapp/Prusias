@@ -39,7 +39,7 @@ class User(db.Model):
         return self.id
 
     def score(self):
-        return self.win/self.lose * sum([building.level for building in self.buildings]) / len(self.buildings) * (self.swordsman + 1)
+        return ((self.win / self.lose) * (self.win / self.lose)) * sum([building.level for building in self.buildings]) / len(self.buildings) * (self.swordsman + 1)
 
     def __str__(self):
         return self.username
@@ -87,6 +87,7 @@ class ResourceBuilding(Building):
 class GoldBuilding(ResourceBuilding):
     __mapper_args__ = {'polymorphic_identity': 'gold'}
     base_production_speed = 1.4
+    img = "/static/img/goldmine.png"
 
     @hybrid_property
     def resource(self):
@@ -99,6 +100,7 @@ class GoldBuilding(ResourceBuilding):
 class MeatBuilding(ResourceBuilding):
     __mapper_args__ = {'polymorphic_identity': 'meat'}
     base_production_speed = 1.5
+    img = "/static/img/barnyard.png"
 
     @hybrid_property
     def resource(self):
@@ -120,6 +122,7 @@ class SwordsmanBuilding(SoldierBuilding):
     base_upgrade_gold = 15
     base_upgrade_meat = 12
     cost_reducement_multiplier = 1.2
+    img = "/static/img/armytower.png"
 
     def meat_cost(self):
         return int(self.base_meat_cost / (self.cost_reducement_multiplier ** self.level))

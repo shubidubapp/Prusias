@@ -1,44 +1,44 @@
-body{
-  background-image: url("/static/img/towntemplate.png");
-  background-repeat: no-repeat;
-  /* background-attachment: fixed; */
-  background-position: center;
-  background-size: cover;
-
+body {
+    background: #a69a92 url("/static/img/town.png") no-repeat fixed center;
+    background-size: cover;
 }
 
-.total_source{
-  background-color: #4d88ff;
-  border: 2px solid #4d88ff;
-  border-radius: 6px;
-  /* position: fixed; */
+.total_source {
+    background-color: #4d88ff;
+    border: 2px solid #4d88ff;
+    border-radius: 6px;
+    /* position: fixed; */
 }
 
-.match_button{
-  margin-top: 2px;
-  font-size: 18px;
-  border: 2px solid inherit;
-  border-radius: 6px;
-  /* position: fixed; */
+.match_button {
+    margin-top: 2px;
+    font-size: 18px;
+    border: 2px solid inherit;
+    border-radius: 6px;
+    /* position: fixed; */
 }
 
 .flash_message {
-	/* fixed position a zero-height full width container */
-	/* position: fixed; */
-	/* center all inline content */
-	text-align: center;
+    /* fixed position a zero-height full width container */
+    /* position: fixed; */
+    /* center all inline content */
+    text-align: center;
 }
 
 .flash_message > div {
-	/* make the block inline */
-	display: inline-block;
-	/* reset container's center alignment */
-	text-align: left;
+    /* make the block inline */
+    display: inline-block;
+    /* reset container's center alignment */
+    text-align: left;
 }
 
-.bg_stats{
-  background-color: rgba(255, 255, 255, 0.5);
-  background-size: contain;
-  border-radius: 6px;
-  border-color: 1px solid inherit;
+.bg_stats {
+    background-color: rgba(255, 255, 255, 0.5);
+    background-size: contain;
+    border-radius: 6px;
+    border-color: 1px solid inherit;
+}
+
+.building {
+
 }

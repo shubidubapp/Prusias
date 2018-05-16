@@ -2,49 +2,63 @@
 
 {% block styles %}
     {{ super() }}
-    <link rel="stylesheet" href="{{ url_for('static', filename='css/match_result.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/match.css') }}">
 {% endblock %}
 
 
 {% block content %}
+    <div class="container">
 
-    <div class="row">
-        <div class="col-md-8 offset-md-2">
-          <div class="result_screen">
-            {% if winner.username == current_user.username %}
-            <img class="img-fluid" src="/static/img/soldier1.png" alt="soldier1">
-            <div class="result_message">
-              <p style="font-size: 35px; color: green ">You won!</p>
-              <p>You have earned: <span class="humanize">{{ earned['gold'] }}</span> Gold and <span class="humanize">{{ earned['meat'] }}</span> Meat </p>
-              <p>At the end of the battle you have lost <span class="humanize">{{ lost }}</span> swordsman. You now have <span class="humanize">{{ current_user.swordsman }}</span> swordsman</p>
-              <p>Your new score is: {{ current_user.score() | round(precision=1) }}</p>
+        <div class="row">
+            <div class="col-md-3">
+                <div style="text-align: center; padding-top: 5%">
+                    <h3 style="font-weight:bold; text-align: center">LEADERBOARD</h3>
+                    <div class="leaderboard">
+                        {% for rank, user, score in highscore_table %}
+                            <span>
+                  <p {% if user == current_user.username %}
+                      class="active"
+                  {% endif %} style="color:white; background-color: {{ loop.cycle("#dc0c4c", "#afc307") }};">{{ rank }}. <b>{{ user }}: <span
+                          class="humanize">{{ score | round(precision=1) }}</span></b></p>
+                </span>
+                        {% endfor %}
+                    </div>
+                </div>
             </div>
-            {% else %}
-            <div class="result_message">
-              <img class="img-fluid" src="/static/img/soldier2.png" alt="soldier2">
-              <p style="font-size: 35px; color: red">You lost!</p>
-              <p>You have lost: <span class="humanize">{{ earned['gold'] }}</span> Gold and <span class="humanize">{{ earned['meat'] }}</span> Meat to the enemy </p>
-              <p>At the end of the battle you have lost all of your swordsman. You now have <span class="humanize">{{ current_user.swordsman }}</span> swordsman</p>
-              <p>Your new score is: <span class="humanize">{{ current_user.score() | round(precision=1) }}</span></p>
+            <div class="col-md-8 offset-md-1">
+                <div style="text-align: center; font-weight:bold;" class="warrior_border">
+                    {% if winner.username == current_user.username %}
+                        <img style="max-width: 38%" class="img-fluid"
+                             src="{{ url_for('static', filename='img/soldier1.png') }}" alt="soldier1">
+                        <div class="result_message">
+                            <p style="font-size: 35px; color: green ">You won!</p>
+                            <p>You have earned: <span class="humanize">{{ earned['gold'] }}</span> Gold and <span
+                                    class="humanize">{{ earned['meat'] }}</span> Meat </p>
+                            <p>At the end of the battle you have lost <span class="humanize">{{ lost }}</span>
+                                swordsman.
+                                You
+                                now
+                                have <span class="humanize">{{ current_user.swordsman }}</span> swordsman</p>
+                            <p>Your new score is: <span class="humanize">{{ current_user.score() | round(precision=1) }}</span></p>
+                        </div>
+                    {% else %}
+                        <div class="result_message">
+                            <img style="max-width: 38%" class="img-fluid" src="{{ url_for('static', filename='img/soldier2.png') }}"
+                                 alt="soldier2">
+                            <p style="font-size: 35px; color: red">You lost!</p>
+                            <p>You have lost: <span class="humanize">{{ earned['gold'] }}</span> Gold and <span
+                                    class="humanize">{{ earned['meat'] }}</span> Meat to the enemy </p>
+                            <p>At the end of the battle you have lost all of your swordsman. You now have <span
+                                    class="humanize">{{ current_user.swordsman }}</span> swordsman</p>
+                            <p>Your new score is: <span
+                                    class="humanize">{{ current_user.score() | round(precision=1) }}</span>
+                            </p>
+                        </div>
+                    {% endif %}
+                    <a class="btn btn-sm btn-success rematch_button"
+                       href="{{ url_for("get_match", username=current_user.username) }}">New Match!</a>
+                </div>
             </div>
-            {% endif %}
-            <a class="btn btn-sm btn-success rematch_button" href="{{ url_for("get_match", username=current_user.username) }}">New Match!</a>
         </div>
-
-        <div class="row leaderboard">
-          <div style="text-align: center;">
-            <p style="font-weight:bold; font-size:20px;">LEADERBOARD</p>
-            <div class="leaderboard">
-              {% for rank, user, score in highscore_table %}
-              <span>
-                <p {% if user == current_user.username %}
-                class="active"
-                {% endif %} style="color:white; background-color: {{ loop.cycle("#dc0c4c", "#afc307") }};">{{ rank }}. <b>{{ user }}: <span class="humanize">{{ score | round(precision=1) }}</span></b></p>
-              </span>
-              {% endfor %}
-            </div>
-          </div>
-        </div>
-
-
+    </div>
 {% endblock %}

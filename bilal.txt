@@ -1,0 +1,9 @@
+To run the code in your computer:
+
+1. Install Python3 to your system if you haven't before
+2. Install Pip3 to your system if you haven't before
+3. Using terminal cd into project folder
+4. Run command: "pip3 install -r requirements.txt"
+5. After installment run the code using command: "python3 run.py"
+6. Our server runs at "0.0.0.0:5000" you can visit it in your browser
+7. For the first time running go to "0.0.0.0:5000/dbc" to initialize the database and create the tables

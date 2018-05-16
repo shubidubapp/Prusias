@@ -1,6 +1,6 @@
 from flask_wtf import FlaskForm
 from wtforms import StringField, PasswordField, HiddenField, IntegerField
-from wtforms.validators import InputRequired, Email, EqualTo
+from wtforms.validators import InputRequired, Email, EqualTo, NumberRange
 from wtforms.fields.html5 import EmailField
 
 
@@ -24,7 +24,8 @@ class BuildingForm(FlaskForm):
 
 class SoldierBuildingForm(FlaskForm):
     id = HiddenField("Id")
-    count = IntegerField("Count", validators=[InputRequired("You can't produce 0(zero) soldiers!")])
+    count = IntegerField("Count", validators=[InputRequired("You can't produce 0(zero) soldiers!"),
+                                              NumberRange(min=1, message="You should enter a positive integer!")])
 
 
 class MatchForm(FlaskForm):

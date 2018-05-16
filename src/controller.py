@@ -39,8 +39,12 @@ def index():
 
 @app.route("/register/", methods=["GET"])
 def register_get():
-    form = RegisterForm()
-    return render_template("register.html.j2", form=form)
+    if current_user.is_authenticated:
+        flash("You are already logged in", "success")
+        return redirect(url_for('u', username=current_user.username))
+    else:
+        form = RegisterForm()
+        return render_template("register.html.j2", form=form)
 
 
 @app.route("/login/", methods=["GET"])
@@ -131,7 +135,6 @@ def produce_soldier():
                 flash("You don't have enough resources.", 'warning')
         else:
             flash('You should build this building first!')
-
     else:
         flash_errors(form)
     return redirect(url_for('u', username=current_user.username))
@@ -166,9 +169,13 @@ def u(username):
 def get_match():
     if current_user.swordsman > 0:
         random_user = get_opponent()
-        form = MatchForm(user_id=current_user.id, opponent_id=random_user.id)
-        highscore_table = get_highscore_table()
-        return render_template("match.html.j2", opponent_user=random_user, form=form, highscore_table=highscore_table)
+        if random_user:
+            form = MatchForm(user_id=current_user.id, opponent_id=random_user.id)
+            highscore_table = get_highscore_table()
+            return render_template("match.html.j2", opponent_user=random_user, form=form, highscore_table=highscore_table)
+        else:
+            flash("There is no one that can fight against you.", "warning")
+            return redirect(url_for('u', username=current_user.username))
     else:
         flash("You should have some soldiers to fight", "warning")
         return redirect(url_for('u', username=current_user.username))

@@ -139,8 +139,8 @@
                     var gold = parseInt($(this).find('span.soldier_gold').html());
                     var meat = parseInt($(this).find('span.soldier_meat').html());
                     var count = $(this).find('.form_count');
-                    var amount_gold = window.new_gold / gold - 1;
-                    var amount_meat = window.new_meat / meat - 1;
+                    var amount_gold = window.new_gold / gold;
+                    var amount_meat = window.new_meat / meat;
                     if (amount_gold < amount_meat) {
                         count.attr('placeholder', Math.floor(amount_gold))
                     }
